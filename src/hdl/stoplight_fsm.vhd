@@ -67,9 +67,10 @@ entity stoplight_fsm is
            o_R     : out  STD_LOGIC;
            o_Y     : out  STD_LOGIC;
            o_G     : out  STD_LOGIC);
+           
 end stoplight_fsm;
 
-
+--stoplight : stoplight_fsm 
  
     
 architecture stoplight_fsm_arch of stoplight_fsm is 
@@ -81,14 +82,15 @@ architecture stoplight_fsm_arch of stoplight_fsm is
 begin
 	-- CONCURRENT STATEMENTS ----------------------------
 	-- Next state logic
-	f_Q_next(0) <= 
+	f_Q_next(0) <= not f_Q(1) and i_C;
+	f_Q_next(1) <= not f_Q(1) and f_Q(0) and not i_C;
 	
 	-- Output logic
-	o_R <= (not f_Q(1) and not f_Q_next(0)) or (f_Q(1) and f_Q_next(0));
-	o_Y <= f_Q(1) and not f_Q_next(0);
-	o_G <= not f_Q(1) and f_Q_next(0);
+	o_R <= (not f_Q(1) and not f_Q(0)) or (f_Q(1) and f_Q(0));
+	o_Y <= f_Q(1) and not f_Q(0);
+	o_G <= not f_Q(1) and f_Q(0);
 	-------------------------------------------------------	
-	
+
 	-- PROCESSES ----------------------------------------	
 	-- state memory w/ asynchronous reset ---------------
 	register_proc : process (i_clk, i_reset)
